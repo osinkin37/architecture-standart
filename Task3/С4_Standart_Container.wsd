@@ -1,0 +1,39 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Диаграмма контейнеров банка "Стандарт"
+top to bottom direction
+
+Person(client, "Клиент", "Клиент банка")
+Person(manager, "Менеджер", "Сотрудники фронт/бэк-офиса")
+Person(call_center_person, "Менеджер колл центра", "Сотрудник колл центра")
+
+System_Boundary(bank_standart_system, "Цифровые системы банка Стандарт") {
+    Container(internet_bank, "Интернет-банк", "ASP.NET MVC 4.5", "Клиент-серверная система интернет банка")
+    ContainerDb(internet_bank_db, "База данных интернет банка", "MS SQL", "Хранит данные по работе интернет банка")
+
+    Container(abs, "АБС банка", "Delphi", "Десктопный клиент")
+    ContainerDb(abs_db, "База данных системы АБС", "Oracle", "Хранит и обрабатывает данные системы АБС")
+
+    Container(call_center, "Система колл центра", "React.js/Java Spring Boot", "Собственная система колл центра банка")
+    ContainerDb(call_center_db, "База данных системы колл центра", "PostgreSQL", "Хранит и обрабатывает данные системы колл центра")
+
+    Container(sms_gateway, "СМС шлюз", ".NET", "Отправка СМС")
+    Container(site, "Сайт банка", "React.js/PHP", "Сайт банка")
+}
+
+System_Ext(SMS_Ext, "Телеком-оператор", "Поставщик СМС-услуг")
+
+Rel(client, site, "Подача заявки на депозит", "HTTPS")
+Rel(client, internet_bank, "Подача заявки на депозит", "native")
+
+Rel(internet_bank, internet_bank_db, "Взаимодействие с базой", "native")
+Rel(call_center, call_center_db, "Взаимодействие с базой", "native")
+Rel(abs, abs_db, "Взаимодействие с базой", "native")
+Rel(sms_gateway, SMS_Ext, "Отправка СМС клиенту", "native")
+Rel(SMS_Ext, client, "Отправка СМС клиенту", "native")
+Rel(abs, sms_gateway, "Отправка СМС клиенту", "native")
+Rel(call_center_person, call_center, "Взаимодействие с системой колл центра", "HTTPS")
+Rel(manager, abs, "Обработка заявки", "native")
+
+@enduml

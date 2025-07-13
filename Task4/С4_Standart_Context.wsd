@@ -1,0 +1,18 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Диаграмма контекста банка "Стандарт"
+
+Person(call_center_manager, "Менеджер кол-центра", "Консультирует клиентов банка")
+Person(client, "Клиент", "Клиенты банка")
+Person(ext_call_center_manager, "Менеджер партнёрского кол-центра", "Консультирует клиентов банка")
+
+System(bank_standart_system, "Цифровая платформа банка 'Стандарт'", "Интернет-банк, сайт")
+System_Ext(ext_call_center, "Партнёрский кол-центр", "Обрабатывает клиентские запросы через стороннюю систему")
+
+Rel(client, bank_standart_system, "Запрос информации о ставках и депозитах", "HTTPS")
+
+Rel(call_center_manager, bank_standart_system, "Получение актуальных данных о депозитах", "Система колл-центра")
+Rel(ext_call_center_manager, ext_call_center, "Получение актуальных данных о депозитах", "Внешняя система")
+
+@enduml

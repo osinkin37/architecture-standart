@@ -1,0 +1,27 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+
+title Диаграмма контейнеров банка "Стандарт"
+
+Person(call_center_manager, "Менеджер кол-центра", "Консультирует клиентов банка")
+Person(client, "Клиент", "Клиенты банка")
+Person(ext_call_center_manager, "Менеджер партнёрского кол-центра", "Консультирует клиентов банка")
+
+System_Boundary(bank_standart_system, "Цифровая платформа банка 'Стандарт'") {
+    Container(abs, "АБС", "Delphi", "Приложение для работы с клиентами банка")
+    ContainerDb(abs_db, "База данных АБС", "Oracle", "Хранит и обрабатывает информацию о депозитах")
+
+    Container(call_center, "Система колл-центра", "React.js / Java Spring Boot", "Основной инструмент операторов банка")
+    ContainerDb(call_center_db, "База данных колл-центра", "PostgreSQL", "Хранит запросы клиентов и историю консультаций")
+}
+
+System_Ext(ext_call_center, "Партнёрский колл-центр", "Сторонний сервис обработки клиентских запросов")
+
+Rel(client, call_center, "Получение актуальных данных о депозитах", "HTTPS / Телефон")
+Rel(call_center_manager, abs, "Получение данных о ставках", "API")
+Rel(ext_call_center_manager, ext_call_center, "Получение актуальных данных о депозитах", "API")
+Rel(call_center, call_center_db, "Доступ к данным о депозитах и ставках", "SQL")
+Rel(abs, abs_db, "Обновление информации по ставкам", "SQL")
+
+@enduml
